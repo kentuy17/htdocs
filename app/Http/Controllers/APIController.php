@@ -22,13 +22,14 @@ class APIController extends Controller
         $data->user_id = $id;
         $data->save();
 
-        $emp = Employee::where('biometric_id', $id)->get();
+        $emp = Employee::where('biometric_id', $id)->first();
         $welcum_url = 'Employee not yet enrolled in the system.';
         $emp_id = null;
+        $local_ip = '192.168.2.90';
 
-        if(count($emp) > 0){
-            $welcum_url = 'http://192.168.153.100:8000/welcome/' + $emp->user_id;
-            $emp_id = $emp->user_id;
+        if($emp){
+            $welcum_url = 'http://' . $local_ip . ':8000/clockin/' . $emp->id;
+            $emp_id = $emp->id;
         }
 
         $callback = [
@@ -36,7 +37,7 @@ class APIController extends Controller
             'data' => [
                 'welcome_url' => $welcum_url,
                 'emp_id' => $emp_id,
-                'ip' => '192.168.153.100',
+                'ip' => $local_ip,
                 'port' => '8000',
                 'time' => Carbon::now()->toTimeString(),
                 'date' => Carbon::now()->toDateString()
@@ -50,6 +51,18 @@ class APIController extends Controller
     {
         $response = Employee::with('user.role.role')->find($request->id);
         echo json_encode($response);
+    }
+
+    public function clockin($id)
+    {
+        $emp = Employee::where('biometric_id', $id)->first();
+        $img = 'default-human';
+
+        if($emp){
+            $img = $emp->gender == '1' ? 'leni' : 'bong';
+        }
+
+        return view('clockin', compact('emp','img'));
     }
 
 

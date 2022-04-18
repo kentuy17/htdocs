@@ -26,7 +26,20 @@ Route::group(['middleware' => ['guest']], function ()
 
     Route::get('register', 'AuthController@showRegister');
 
+    Route::get('clockin/{id}', 'APIController@clockin');
 
+    // api
+    Route::get('get-api/{id}', ['as'=>'get-api', 'uses' => 'APIController@getGuzzleRequest']);
+    Route::get('api/employee/{id}', ['as' => 'get-employee-api', 'uses' => 'APIController@getEmployee']);
+    Route::post('api/employee/{id}', ['as' => 'get-employee-api', 'uses' => 'APIController@insertLog']);
+
+    // timeclock
+    Route::post('store', 'APIController@store');
+    Route::get('api/index', 'APIController@api');
+    Route::get('post','APIController@postRequest');
+    Route::get('get','APIController@getRequest');
+    Route::post('api/{id}','APIController@store');
+    Route::get('log/{id}','APIController@store');
 });
 
 Route::group(['middleware' => ['auth']], function ()
@@ -306,18 +319,6 @@ Route::group(['middleware' => ['auth']], function ()
     Route::get('add-holidays', ['as'=>'add-holidays', 'uses' => 'LeaveController@showHolidays']);
     Route::post('add-holidays', ['as'=>'add-holidays', 'uses' => 'LeaveController@insertHoliday']);
     Route::get('holiday-listing', ['as'=>'holiday-listing', 'uses' => 'LeaveController@showHoliday']);
-
-    // api
-    Route::get('get-api/{id}', ['as'=>'get-api', 'uses' => 'APIController@getGuzzleRequest']);
-    Route::get('api/employee/{id}', ['as' => 'get-employee-api', 'uses' => 'APIController@getEmployee']);
-    Route::post('api/employee/{id}', ['as' => 'get-employee-api', 'uses' => 'APIController@insertLog']);
-
-    Route::post('store', 'APIController@store');
-    Route::get('api/index', 'APIController@api');
-    Route::get('post','APIController@postRequest');
-    Route::get('get','APIController@getRequest');
-    Route::post('api/{id}','APIController@store');
-    Route::get('log/{id}','APIController@store');
     
 
     // Route::get('lagsik', ['as' => 'lagsik', 'uses' => 'AttendanceController@getBiometricLogs']);
